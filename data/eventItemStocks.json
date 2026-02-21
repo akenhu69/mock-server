@@ -1,0 +1,22 @@
+[
+  {
+    "eventItemId": 1,
+    "remainingStock": 50
+  },
+  {
+    "eventItemId": 2,
+    "remainingStock": 5
+  },
+  {
+    "eventItemId": 3,
+    "remainingStock": 0
+  },
+  {
+    "eventItemId": 4,
+    "remainingStock": 100
+  },
+  {
+    "eventItemId": 5,
+    "remainingStock": 20
+  }
+]

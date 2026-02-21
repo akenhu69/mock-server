@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "漢堡",
+    "slug": "burgers",
+    "description": "各式美味漢堡",
+    "image": "https://dummyimage.com/800x400/3498db/FFFFFF&text=漢堡"
+  },
+  {
+    "id": 2,
+    "name": "飲料",
+    "slug": "drinks",
+    "description": "冰涼飲品",
+    "image": "https://dummyimage.com/800x400/9b59b6/FFFFFF&text=飲料"
+  },
+  {
+    "id": 3,
+    "name": "點心",
+    "slug": "sides",
+    "description": "美味配餐點心",
+    "image": "https://dummyimage.com/800x400/e74c3c/FFFFFF&text=點心"
+  },
+  {
+    "id": 4,
+    "name": "甜點",
+    "slug": "desserts",
+    "description": "甜蜜美味",
+    "image": "https://dummyimage.com/800x400/f1c40f/FFFFFF&text=甜點"
+  },
+  {
+    "id": 5,
+    "name": "套餐",
+    "slug": "combo",
+    "description": "物超所值的超值套餐",
+    "image": "https://dummyimage.com/800x400/2ecc71/FFFFFF&text=套餐"
+  },
+  {
+    "id": 6,
+    "name": "早餐",
+    "slug": "breakfast",
+    "description": "活力滿滿的早餐選擇",
+    "image": "https://dummyimage.com/800x400/e67e22/FFFFFF&text=早餐"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "username": "demo",
+    "email": "demo@example.com",
+    "password": "demo123",
+    "role": "user",
+    "firstName": "測試",
+    "lastName": "用戶",
+    "phone": "0912345678",
+    "address": "台北市信義區101大樓",
+    "createdAt": "2023-01-15T08:30:00.000Z"
+  },
+  {
+    "id": 2,
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "role": "admin",
+    "firstName": "管理",
+    "lastName": "員",
+    "phone": "0987654321",
+    "address": "台北市大安區復興南路",
+    "createdAt": "2022-12-01T10:00:00.000Z"
+  }
+]

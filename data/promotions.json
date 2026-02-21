@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "超值午餐組合",
+    "description": "指定漢堡加飲料享優惠價",
+    "discount": 15,
+    "startDate": "2023-09-01T00:00:00.000Z",
+    "endDate": "2023-10-31T23:59:59.000Z",
+    "image": "/images/promotions/lunch_combo.png",
+    "isActive": true
+  },
+  {
+    "id": 2,
+    "title": "買一送一活動",
+    "description": "指定甜品買一送一",
+    "discount": 100,
+    "startDate": "2023-09-15T00:00:00.000Z",
+    "endDate": "2023-09-30T23:59:59.000Z",
+    "image": "/images/promotions/buy_one_get_one.png",
+    "isActive": true
+  }
+]

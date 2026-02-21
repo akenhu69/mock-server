@@ -1,0 +1,348 @@
+{
+  "getuser": {
+    "400": {
+      "code": 400,
+      "message": "Could not retrieve user"
+    }
+  },
+  "promptlogin": {
+    "400": {
+      "code": 400,
+      "message": "Could not retrieve user"
+    },
+    "401": {
+      "code": 401,
+      "message": "Could not retrieve user, User canceled"
+    }
+  },
+  "addTags": {
+    "500": {
+      "code": 500,
+      "message": "Error occurred when update tags: Server error message"
+    }
+  },
+  "removeTags": {
+    "500": {
+      "code": 500,
+      "message": "Error occurred when update tags: Server error message"
+    }
+  },
+  "getTags": {
+    "500": {
+      "code": 500,
+      "message": "Error occurred when update tags: Server error message"
+    },
+    "no-profiling": {
+      "success": true,
+      "tags": ["mobile-user"]
+    }
+  },
+  "getAuthCode": {
+    "400-no-client": {
+      "code": 400,
+      "message": "Client ID not provided"
+    },
+    "400-invalid-client": {
+      "code": 400,
+      "message": "Invalid Client ID: invalid-client-id"
+    },
+    "401": {
+      "code": 401,
+      "message": "User is not logged in"
+    },
+    "500": {
+      "code": 500,
+      "message": "Unknown error: Server error message"
+    }
+  },
+  "getPoints": {
+    "400": {
+      "code": 400,
+      "message": "The requested param is invalid"
+    },
+    "403": {
+      "code": 403,
+      "message": "User not logged in"
+    },
+    "404": {
+      "code": 404,
+      "message": "Failed to retrieve deals points"
+    }
+  },
+  "burnPoints": {
+    "400": {
+      "code": 400,
+      "message": "The requested param is invalid"
+    },
+    "403": {
+      "code": 403,
+      "message": "User not logged in"
+    },
+    "404": {
+      "code": 404,
+      "message": "Failed to burn points"
+    }
+  },
+  "continuous": {
+    "100": {
+      "code": 100,
+      "message": "Location service not available"
+    },
+    "102": {
+      "code": 102,
+      "message": "Location not available"
+    }
+  },
+  "scanner": {
+    "scanner": {
+      "100": {
+        "code": 100,
+        "message": "User Cancelled"
+      },
+      "101": {
+        "code": 101,
+        "message": "Permission deny"
+      },
+      "200": {
+        "code": 200,
+        "message": "User tapped manual entry button"
+      },
+      "400-invalid-mode": {
+        "code": 400,
+        "message": "Invalid scan mode: invalid_mode"
+      },
+      "400-invalid-checksum": {
+        "code": 400,
+        "message": "Invalid checksumAlgorithm: invalid_algorithm"
+      }
+    }
+  },
+  "addPoint": {
+    "100-201": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 201,
+        "errorMessage": "Created"
+      }
+    },
+    "100-200": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 200,
+        "errorMessage": "OK. TransactionId is not unique so no points are allocated however the request is valid so returning the current card."
+      }
+    },
+    "100-400": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 400,
+        "errorMessage": "Bad Request"
+      }
+    },
+    "100-403-not-logged": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 403,
+        "errorMessage": "User not logged in"
+      }
+    },
+    "100-403-unauthorized": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 403,
+        "errorMessage": "Unauthorised - The request has failed IP whitelisting requirements"
+      }
+    },
+    "100-409-locked": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Consumer is locked. (Note: This is a temporary lock to prevent race conditions). Please try again."
+      }
+    },
+    "100-409-too-many": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Too many requests - Daily request limit exceeded for consumer card and/or device"
+      }
+    },
+    "100-409-point-limit": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Request would exceed Point limit for the day - Daily point limit exceeded for consumer card"
+      }
+    },
+    "100-409-unable-create": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Unable to create new card instance - Failed to create card instance"
+      }
+    },
+    "100-409-inactive": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Card is currently inactive - The Loyalty Program is not within the configured Daily Start and End times"
+      }
+    },
+    "100-409-auto-activate": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Unable to auto-activate reward - Unable to find a reward to auto-activate as part of the request"
+      }
+    },
+    "100-409-invalid-transaction": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Transaction Id is not valid - This happens if the same request was sent twice and the idempotency check fails"
+      }
+    },
+    "100-500": {
+      "code": 100,
+      "message": "Adding Point Failed",
+      "serverResponse": {
+        "errorCode": 500,
+        "errorMessage": "Internal Server Error"
+      }
+    }
+  },
+  "activateReward": {
+    "101-204": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 204,
+        "errorMessage": "No Content"
+      }
+    },
+    "101-400": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 400,
+        "errorMessage": "Offer with ID 12345 is not available for the loyalty card with instance id 67890 which is an instance of loyalty card with ID 11111"
+      }
+    },
+    "101-402": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 402,
+        "errorMessage": "Payment Required"
+      }
+    },
+    "101-403": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 403,
+        "errorMessage": "Consumer is locked. (Note: This is a temporary lock to prevent race conditions). Please try again."
+      }
+    },
+    "101-409-already": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Already Activated - A reward has already been activated for the card (Stamp Cards only)"
+      }
+    },
+    "101-409-criteria": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Loyalty Criteria not met - The stamp card has not been filled to completion (Stamp Cards only)"
+      }
+    },
+    "101-409-max-offers": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Maximum offers already activated - The maximum number of Stamp Card instances have been reached for the specific device"
+      }
+    },
+    "101-409-filter": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Filter criteria not met - The consumer has not been targeted for the reward offer"
+      }
+    },
+    "101-409-activation-limit": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Activation limit exceed - The reward offer has reached the activated limit"
+      }
+    },
+    "101-409-not-enough-points": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 409,
+        "errorMessage": "Not enough points to activate offer for Points Card - The consumer does not have enough points to activate the reward offer"
+      }
+    },
+    "101-500": {
+      "code": 101,
+      "message": "Activate Reward Failed",
+      "serverResponse": {
+        "errorCode": 500,
+        "errorMessage": "Internal Server Error"
+      }
+    }
+  },
+  "androidErrors": {
+    "700": {
+      "code": 700,
+      "message": "No Connection"
+    },
+    "701": {
+      "code": 701,
+      "message": "Connectivity Issues"
+    },
+    "702": {
+      "code": 702,
+      "message": "Certificate transparency"
+    },
+    "703": {
+      "code": 703,
+      "message": "Wrong type token"
+    },
+    "704": {
+      "code": 704,
+      "message": "Security check failed. It could be that a user's device is rooted or some other security reason"
+    }
+  },
+  "otherErrors": {
+    "500": {
+      "code": 500,
+      "message": "Unexpected Error, please contact product team"
+    },
+    "408": {
+      "code": 408,
+      "message": "Request Timeout"
+    }
+  }
+}

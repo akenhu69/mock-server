@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock API Server</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        code,
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Hide scrollbar for code blocks but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 bg-opacity-90 backdrop-blur-sm">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <span class="text-2xl">🚀</span> Mock API Server
+                    </a>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#examples"
+                        class="text-sm font-medium text-slate-500 hover:text-brand-600 transition-colors">範例</a>
+                    <a href="#response-format"
+                        class="text-sm font-medium text-slate-500 hover:text-brand-600 transition-colors">格式</a>
+                    <a href="/README.md" target="_blank"
+                        class="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">完整文檔
+                        &rarr;</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">API Testing Made Simple</h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                輕量級 Mock 伺服器，支援動態延遲、錯誤模擬與 Cloudflare 等級的 Waiting Room 測試。
+            </p>
+        </div>
+
+        <!-- Takes Navigation -->
+        <div class="flex justify-center mb-8">
+            <div class="bg-slate-100 p-1 rounded-xl inline-flex shadow-inner gap-0.5">
+                <button onclick="switchTab('dynamic')" id="tab-btn-dynamic"
+                    class="px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 bg-white text-brand-700 shadow-sm ring-1 ring-black/5">
+                    Dynamic Mock API
+                </button>
+                <button onclick="switchTab('waiting')" id="tab-btn-waiting"
+                    class="px-6 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 transition-all duration-200">
+                    Waiting Room
+                </button>
+                <button onclick="switchTab('schema')" id="tab-btn-schema"
+                    class="px-6 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 transition-all duration-200 flex items-center gap-1.5">
+                    <span>🗂️</span> Schema Manager
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Content: Dynamic API -->
+        <div id="tab-dynamic" class="space-y-8 animate-fade-in relative">
+            <div class="flex justify-end mb-2">
+                <button onclick="copyTabAsMarkdown('tab-dynamic')"
+                    class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-sm font-medium flex items-center gap-2 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    Copy Doc as Markdown
+                </button>
+            </div>
+
+            <!-- Endpoint Header -->
+            <div
+                class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 md:p-8 text-white shadow-lg shadow-blue-500/20">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span
+                                class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold tracking-wide backdrop-blur-sm">ALL
+                                METHODS</span>
+                            <span class="text-blue-100 text-sm font-medium">通用動態端點</span>
+                        </div>
+                        <div class="font-mono text-xl md:text-2xl font-semibold break-all">
+                            /api/mock/dynamic
+                        </div>
+                    </div>
+                    <div class="bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/10 text-sm">
+                        支援 GET, POST, PUT, DELETE
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Card 1 -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-xl mb-4">⏱️</div>
+                    <h3 class="font-bold text-slate-900 mb-2">網路延遲</h3>
+                    <p class="text-sm text-slate-600">參數 <code>delay=3000</code><br>模擬慢速網路回應。</p>
+                </div>
+                <!-- Card 2 -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-xl mb-4">⏰</div>
+                    <h3 class="font-bold text-slate-900 mb-2">請求超時</h3>
+                    <p class="text-sm text-slate-600">參數 <code>timeout=2000</code><br>模擬 408 Timeout 錯誤。</p>
+                </div>
+                <!-- Card 3 -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-xl mb-4">❌</div>
+                    <h3 class="font-bold text-slate-900 mb-2">HTTP 錯誤</h3>
+                    <p class="text-sm text-slate-600">參數 <code>httpStatus=500</code><br>模擬任意狀態碼。</p>
+                </div>
+                <!-- Card 4 -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-xl mb-4">🎨
+                    </div>
+                    <h3 class="font-bold text-slate-900 mb-2">自定義 Wrapper</h3>
+                    <p class="text-sm text-slate-600">參數 <code>code</code>, <code>message</code><br>修改回傳結構的屬性。</p>
+                </div>
+                <!-- Card 5 -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center text-xl mb-4">📦</div>
+                    <h3 class="font-bold text-slate-900 mb-2">自定義 Payload</h3>
+                    <p class="text-sm text-slate-600">參數 <code>data</code><br>注入自定義的資料物件。</p>
+                </div>
+                <!-- Card 6 -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center text-xl mb-4">⚡</div>
+                    <h3 class="font-bold text-slate-900 mb-2">Raw Mode</h3>
+                    <p class="text-sm text-slate-600">參數 <code>raw=true</code><br>不使用 Wrapper，直接回傳。</p>
+                </div>
+            </div>
+
+            <!-- Parameters Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h2 class="font-bold text-slate-800">🎛️ 請求參數 (Query / Body)</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    參數</th>
+                                <th scope="col"
+                                    class="px-1 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    類型</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    說明</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    delay</td>
+                                <td class="px-1 py-4 whitespace-nowrap text-xs text-slate-500">Integer</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">延遲幾毫秒 (ms) 後回傳。</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    timeout</td>
+                                <td class="px-1 py-4 whitespace-nowrap text-xs text-slate-500">Integer</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">延遲幾毫秒後回傳 <code
+                                        class="text-red-500">408 Timeout</code>。</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    httpStatus</td>
+                                <td class="px-1 py-4 whitespace-nowrap text-xs text-slate-500">Integer</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">
+                                    指定 HTTP 狀態碼。支援：
+                                    <div class="mt-1 flex flex-wrap gap-1">
+                                        <span class="bg-slate-100 text-xs px-1 rounded">400</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">401</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">403</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">404</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">409</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">422</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">429</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">500</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">502</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">503</span>
+                                        <span class="bg-slate-100 text-xs px-1 rounded">504</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    code</td>
+                                <td class="px-1 py-4 whitespace-nowrap text-xs text-slate-500">Integer</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">自定義 Wrapper 中的 <code>code</code> 欄位資訊 (預設
+                                    0)。</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    message</td>
+                                <td class="px-1 py-4 whitespace-nowrap text-xs text-slate-500">String</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">自定義 Wrapper 中的 <code>msg</code> 欄位資訊。</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    data</td>
+                                <td class="px-1 py-4 whitespace-nowrap text-xs text-slate-500">JSON</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">
+                                    自定義 Payload 資料。<br>
+                                    <span class="text-xs text-slate-400">GET 請求需進行 URL Encode。</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">raw
+                                </td>
+                                <td class="px-1 py-4 whitespace-nowrap text-xs text-slate-500">Boolean</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">設為 <code>true</code> 時，不使用 code/msg 包裝，直接回傳
+                                    <code>data</code>。
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Usage Examples -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h2 class="font-bold text-slate-800">📝 使用範例</h2>
+                </div>
+                <div id="dynamic-examples" class="p-6 space-y-8">
+
+                    <!-- Example Item -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-green-500"></span> 網路延遲 (200 OK)
+                            </h3>
+                        </div>
+                        <div class="relative group">
+                            <pre
+                                class="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>curl "https://mock-server.aken.life/api/mock/dynamic?delay=3000"</code></pre>
+                            <button onclick="copyCode(this)"
+                                class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2.5 py-1.5 rounded transition-colors opacity-0 group-hover:opacity-100">複製</button>
+                        </div>
+                    </div>
+
+                    <!-- Example Item -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-red-500"></span> 超時錯誤 (408 Timeout)
+                            </h3>
+                        </div>
+                        <div class="relative group">
+                            <pre
+                                class="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>curl "https://mock-server.aken.life/api/mock/dynamic?timeout=2000"</code></pre>
+                            <button onclick="copyCode(this)"
+                                class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2.5 py-1.5 rounded transition-colors opacity-0 group-hover:opacity-100">複製</button>
+                        </div>
+                    </div>
+
+                    <!-- Example Item -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-purple-500"></span> 自定義回應 (POST with Delay)
+                            </h3>
+                        </div>
+                        <div class="relative group">
+                            <pre
+                                class="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>curl -X POST https://mock-server.aken.life/api/mock/dynamic \
+  -H "Content-Type: application/json" \
+  -d '{"code": 0, "message": "success", "delay": 2000, "data": {"userId": 123}}'</code></pre>
+                            <button onclick="copyCode(this)"
+                                class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2.5 py-1.5 rounded transition-colors opacity-0 group-hover:opacity-100">複製</button>
+                        </div>
+                    </div>
+
+                    <!-- Example Item -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-yellow-500"></span> 原始回應模式 (Raw Mode)
+                            </h3>
+                            <span class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">不包裝 code/msg</span>
+                        </div>
+                        <div class="relative group">
+                            <pre
+                                class="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>curl -X POST https://mock-server.aken.life/api/mock/dynamic \
+  -H "Content-Type: application/json" \
+  -d '{"raw": true, "data": {"customField": "123", "list": [1, 2]}}'</code></pre>
+                            <button onclick="copyCode(this)"
+                                class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2.5 py-1.5 rounded transition-colors opacity-0 group-hover:opacity-100">複製</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Format Info -->
+            <div id="response-format" class="bg-slate-100 rounded-xl p-6 border border-slate-200">
+                <h4 class="font-bold text-slate-800 mb-3">預設回應結構</h4>
+                <pre class="font-mono text-sm text-slate-600 bg-white p-4 rounded-lg border border-slate-200">{
+  "code": 0,
+  "msg": "success",
+  "data": { ... },
+  "methodCode": null,
+  "s1": null
+}</pre>
+            </div>
+        </div>
+
+
+        <!-- Tab Content: Waiting Room -->
+        <div id="tab-waiting" class="hidden space-y-8 animate-fade-in relative">
+            <div class="flex justify-end mb-2">
+                <button onclick="copyTabAsMarkdown('tab-waiting')"
+                    class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-sm font-medium flex items-center gap-2 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    Copy Doc as Markdown
+                </button>
+            </div>
+
+            <!-- Endpoint Header -->
+            <div
+                class="bg-gradient-to-r from-orange-500 to-pink-600 rounded-2xl p-6 md:p-8 text-white shadow-lg shadow-orange-500/20">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span
+                                class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold tracking-wide backdrop-blur-sm">QUEUE
+                                SYSTEM</span>
+                            <span class="text-orange-100 text-sm font-medium">Cloudflare Waiting Room 模擬</span>
+                        </div>
+                        <div class="font-mono text-xl md:text-2xl font-semibold break-all">
+                            /api/waiting-room
+                        </div>
+                    </div>
+                    <div class="bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/10 text-sm">
+                        Stateful Queue Logic
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert: Cookie -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-amber-800">Cookie Client Required</h3>
+                        <div class="mt-2 text-sm text-amber-700">
+                            <p>此功能依賴 <code>__cfwaitingroom</code> Cookie 來維持排隊狀態。測試時請務必啟用 Cookie (如 curl 的
+                                <code>-c</code> / <code>-b</code> 參數)。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parameters Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h2 class="font-bold text-slate-800">🎛️ 控制參數 (Query Parameters)</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    參數</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    範例值</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    說明</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    status</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600"><code
+                                        class="bg-slate-100 px-2 py-1 rounded">waiting</code></td>
+                                <td class="px-6 py-4 text-sm text-slate-600">重置狀態並開始排隊 (會產生新的 Session 綁定
+                                    Cookie)。<br><span class="text-red-500 text-xs">注意：Polling 時請勿帶此參數，否則會持續重置時間。</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    status</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600"><code
+                                        class="bg-slate-100 px-2 py-1 rounded">allowed</code></td>
+                                <td class="px-6 py-4 text-sm text-slate-600"><strong>強制通過</strong> (Status 200)，不需要排隊
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-brand-600">
+                                    duration</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600"><code
+                                        class="bg-slate-100 px-2 py-1 rounded">120</code></td>
+                                <td class="px-6 py-4 text-sm text-slate-600">設定排隊總時長 (秒)。<br>此設定會綁定當前 Cookie，直到時間結束前都會回傳
+                                    409。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Response Info -->
+            <div id="waiting-response" class="bg-purple-50 rounded-xl p-6 border border-purple-100 mt-8 mb-6">
+                <h4 class="font-bold text-slate-800 mb-3">📡 回應狀態 (Based on Queue Status)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-purple-100 shadow-sm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">HTTP 409</span>
+                            <span class="text-sm font-semibold">排隊中 (Waiting)</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-2">當 <code>inWaitingRoom: true</code> 時回傳。</p>
+                        <pre class="bg-slate-900 text-slate-300 p-2 rounded text-xs overflow-x-auto no-scrollbar">{
+  "inWaitingRoom": true,
+  "waitTime": 60,
+  "refreshIntervalSeconds": 20
+}</pre>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-purple-100 shadow-sm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">HTTP
+                                200</span>
+                            <span class="text-sm font-semibold">已通過 (Allowed)</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-2">當 <code>inWaitingRoom: false</code> 時回傳。</p>
+                        <pre class="bg-slate-900 text-slate-300 p-2 rounded text-xs overflow-x-auto no-scrollbar">{
+  "inWaitingRoom": false,
+  "waitTime": 0
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Waiting Room Examples -->
+            <div id="waiting-examples" class="space-y-6">
+
+                <!-- Scenario 1 -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold text-slate-800">情境 1: 正常排隊 (60秒)</h4>
+                        <span class="text-xs font-mono text-slate-500">Default Flow</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">第一次請求會取得 Cookie，後續請求帶上 Cookie 會看到時間倒數。</p>
+                    <div class="relative group mb-3">
+                        <pre
+                            class="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code># 第一次
+curl -c cookies.txt -H "Accept: application/json" "https://mock-server.aken.life/api/waiting-room"
+
+# 後續Polling (帶上 -b)
+curl -b cookies.txt -H "Accept: application/json" "https://mock-server.aken.life/api/waiting-room"</code></pre>
+                        <button onclick="copyCode(this)"
+                            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2.5 py-1.5 rounded transition-colors opacity-0 group-hover:opacity-100">複製</button>
+                    </div>
+                </div>
+
+                <!-- Scenario 2 -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-bold text-slate-800">情境 2: 快速通關</h4>
+                            <span
+                                class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-bold">熱門</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">開發測試最常用，直接模擬「已排完」狀態。</p>
+                    <div class="relative group">
+                        <pre
+                            class="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>curl "https://mock-server.aken.life/api/waiting-room?status=allowed" \
+  -H "Accept: application/json" \
+  -b cookies.txt</code></pre>
+                        <button onclick="copyCode(this)"
+                            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2.5 py-1.5 rounded transition-colors opacity-0 group-hover:opacity-100">複製</button>
+                    </div>
+                </div>
+
+                <!-- Scenario 3 -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold text-slate-800">情境 3: 自定義排隊時間</h4>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">例如想測試排隊 5 分鐘 (300秒) 的 UI 顯示。</p>
+                    <div class="relative group">
+                        <pre
+                            class="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800"><code>curl "https://mock-server.aken.life/api/waiting-room?duration=300" \
+  -H "Accept: application/json" \
+  -c cookies.txt</code></pre>
+                        <button onclick="copyCode(this)"
+                            class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2.5 py-1.5 rounded transition-colors opacity-0 group-hover:opacity-100">複製</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tab Content: Schema Manager -->
+        <div id="tab-schema" class="hidden space-y-6 animate-fade-in">
+
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl p-6 md:p-8 text-white shadow-lg shadow-violet-500/20">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold tracking-wide backdrop-blur-sm">SCHEMA</span>
+                            <span class="text-violet-100 text-sm font-medium">JSON Schema 管理與假資料生成</span>
+                        </div>
+                        <div class="font-mono text-xl md:text-2xl font-semibold">/api/schema/*</div>
+                    </div>
+                    <div class="bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/10 text-sm">
+                        Import · Generate · Download
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Schema -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <span class="text-base">📥</span>
+                    <h2 class="font-bold text-slate-800">匯入 / 建立 Schema</h2>
+                </div>
+                <div class="p-6 space-y-4">
+                    <!-- Name -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Schema 名稱 <span class="text-red-400">*</span></label>
+                        <input id="schema-name" type="text" placeholder="例如：User Profile、Order、Product..."
+                            class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition" />
+                    </div>
+
+                    <!-- Import Mode Tabs -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">匯入方式</label>
+                        <div class="flex border border-slate-200 rounded-lg overflow-hidden text-sm">
+                            <button id="import-tab-paste" onclick="switchImportMode('paste')"
+                                class="flex-1 py-2 text-center border-b-2 border-violet-500 text-violet-600 bg-white font-medium transition-colors">✏️ 貼上 JSON</button>
+                            <button id="import-tab-file" onclick="switchImportMode('file')"
+                                class="flex-1 py-2 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-medium transition-colors">📂 上傳檔案</button>
+                            <button id="import-tab-url" onclick="switchImportMode('url')"
+                                class="flex-1 py-2 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-medium transition-colors">🔗 URL 匯入</button>
+                        </div>
+                    </div>
+
+                    <!-- Paste Mode -->
+                    <div id="import-paste">
+                        <textarea id="schema-paste" rows="10"
+                            placeholder='{
+  "type": "object",
+  "properties": {
+    "id":    { "type": "number" },
+    "name":  { "type": "string", "format": "name" },
+    "email": { "type": "string", "format": "email" },
+    "active":{ "type": "boolean" }
+  }
+}'
+                            class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition resize-y"></textarea>
+                        <p class="mt-1.5 text-xs text-slate-400">支援標準 JSON Schema (draft-07)，欄位名稱可自動推斷格式（email/name/date 等）</p>
+                    </div>
+
+                    <!-- File Mode -->
+                    <div id="import-file" class="hidden">
+                        <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-violet-400 hover:bg-violet-50 transition-colors">
+                            <span class="text-3xl mb-2">📂</span>
+                            <span class="text-sm text-slate-500">點擊選擇 <code>.json</code> 檔案</span>
+                            <input id="schema-file" type="file" accept=".json,application/json" class="hidden" />
+                        </label>
+                        <p id="schema-file-name" class="mt-1.5 text-xs text-slate-400 text-center"></p>
+                        <script>document.getElementById('schema-file').addEventListener('change', function() {
+                            document.getElementById('schema-file-name').textContent = this.files[0]?.name || ''
+                        })<\/script>
+                    </div>
+
+                    <!-- URL Mode -->
+                    <div id="import-url" class="hidden">
+                        <input id="schema-url" type="url" placeholder="https://json.schemastore.org/package.json"
+                            class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition font-mono" />
+                        <div class="mt-2 flex gap-2 flex-wrap">
+                            <span class="text-xs text-slate-400">快速填入：</span>
+                            <button onclick="document.getElementById('schema-url').value='https://json.schemastore.org/package.json'"
+                                class="text-xs text-violet-500 hover:underline">package.json schema</button>
+                            <button onclick="document.getElementById('schema-url').value='https://json.schemastore.org/tsconfig.json'"
+                                class="text-xs text-violet-500 hover:underline">tsconfig schema</button>
+                        </div>
+                        <p class="mt-1.5 text-xs text-slate-400">伺服器會 fetch 該 URL，請確認 URL 直接回傳 JSON Schema</p>
+                    </div>
+
+                    <button id="import-submit-btn" onclick="submitImport()"
+                        class="w-full py-2.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white font-semibold rounded-lg transition-colors text-sm">
+                        ✅ 匯入 Schema
+                    </button>
+                </div>
+            </div>
+
+            <!-- Schema List -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-base">📋</span>
+                        <h2 class="font-bold text-slate-800">已匯入的 Schemas</h2>
+                    </div>
+                    <button onclick="loadSchemas()" class="text-xs text-slate-400 hover:text-slate-600 transition-colors">🔄 重新載入</button>
+                </div>
+                <div id="schema-list" class="p-4 space-y-2">
+                    <div class="text-center py-8 text-slate-400 text-sm">載入中...</div>
+                </div>
+            </div>
+
+            <!-- Generate Section -->
+            <div id="generate-section" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <span class="text-base">⚡</span>
+                    <h2 class="font-bold text-slate-800">生成假資料</h2>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">選擇 Schema</label>
+                            <select id="schema-select"
+                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition bg-white">
+                                <option value="">— 尚未匯入任何 Schema —</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">生成筆數</label>
+                            <input id="gen-count" type="number" value="10" min="1" max="500"
+                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition" />
+                        </div>
+                    </div>
+                    <button id="generate-btn" onclick="generateFakeData()"
+                        class="w-full py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 disabled:opacity-60 text-white font-semibold rounded-lg transition-all text-sm shadow-sm shadow-violet-400/30">
+                        ⚡ Generate
+                    </button>
+
+                    <!-- Result -->
+                    <div id="generate-result" class="hidden space-y-3">
+                        <div class="flex items-center justify-between">
+                            <p id="generate-meta" class="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-full border border-green-200"></p>
+                            <div class="flex gap-2">
+                                <button onclick="copyGeneratedJson()"
+                                    class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors font-medium flex items-center gap-1">
+                                    📋 複製 JSON
+                                </button>
+                                <button onclick="downloadGeneratedJson()"
+                                    class="px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-xs rounded-lg transition-colors font-medium flex items-center gap-1">
+                                    ⬇️ 下載 .json
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <pre id="generate-json"
+                                class="bg-slate-900 text-slate-300 p-4 rounded-xl overflow-x-auto text-xs border border-slate-800 max-h-96 overflow-y-auto leading-relaxed"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supported Types Info -->
+            <div class="bg-violet-50 rounded-xl p-6 border border-violet-100">
+                <h4 class="font-bold text-slate-800 mb-3">🧬 支援的 format 格式</h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-white p-3 rounded-lg border border-violet-100 shadow-sm">
+                        <div class="text-xs font-bold text-violet-600 mb-1.5">String</div>
+                        <div class="space-y-0.5 text-xs text-slate-600">
+                            <div><code class="bg-slate-100 px-1 rounded">name</code> 隨機姓名</div>
+                            <div><code class="bg-slate-100 px-1 rounded">email</code> Email</div>
+                            <div><code class="bg-slate-100 px-1 rounded">phone</code> 電話</div>
+                            <div><code class="bg-slate-100 px-1 rounded">date</code> 日期</div>
+                            <div><code class="bg-slate-100 px-1 rounded">date-time</code> UTC 時間</div>
+                            <div><code class="bg-slate-100 px-1 rounded">uuid</code> UUID v4</div>
+                            <div><code class="bg-slate-100 px-1 rounded">url</code> / <code class="bg-slate-100 px-1 rounded">uri</code></div>
+                            <div><code class="bg-slate-100 px-1 rounded">color</code> 顏色名稱</div>
+                            <div><code class="bg-slate-100 px-1 rounded">status</code> 狀態文字</div>
+                            <div><code class="bg-slate-100 px-1 rounded">ipv4</code> IP 位址</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-violet-100 shadow-sm">
+                        <div class="text-xs font-bold text-violet-600 mb-1.5">Number</div>
+                        <div class="space-y-0.5 text-xs text-slate-600">
+                            <div>使用 <code class="bg-slate-100 px-1 rounded">minimum</code> / <code class="bg-slate-100 px-1 rounded">maximum</code> 控制範圍</div>
+                            <div class="mt-1">預設：0 ~ 1000</div>
+                            <div class="mt-1 text-slate-400">format: float → 小數點</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-violet-100 shadow-sm">
+                        <div class="text-xs font-bold text-violet-600 mb-1.5">Array / Object</div>
+                        <div class="space-y-0.5 text-xs text-slate-600">
+                            <div>遞迴生成子項目</div>
+                            <div class="mt-1"><code class="bg-slate-100 px-1 rounded">minItems</code> / <code class="bg-slate-100 px-1 rounded">maxItems</code></div>
+                            <div class="mt-1"><code class="bg-slate-100 px-1 rounded">properties</code> 各別設定</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-violet-100 shadow-sm">
+                        <div class="text-xs font-bold text-violet-600 mb-1.5">智能推斷</div>
+                        <div class="space-y-0.5 text-xs text-slate-600">
+                            <div>欄位名稱含 <code class="bg-slate-100 px-1 rounded">email</code> → Email</div>
+                            <div>含 <code class="bg-slate-100 px-1 rounded">name</code> → 姓名</div>
+                            <div>含 <code class="bg-slate-100 px-1 rounded">date/at</code> → 時間</div>
+                            <div>含 <code class="bg-slate-100 px-1 rounded">url/link</code> → URL</div>
+                            <div>不需指定 format 也能生成合理資料</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8 mt-10">
+        <div class="max-w-5xl mx-auto px-4 text-center text-slate-400 text-sm">
+            <p>&copy; 2025 Mock API Server. Built for DX.</p>
+        </div>
+    </footer>
+
+    <script src="markdown.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

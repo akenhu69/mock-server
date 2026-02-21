@@ -1,0 +1,11 @@
+{
+  "schemas": [
+    {
+      "id": "mlw45uuqtkq2a",
+      "name": "Test User",
+      "createdAt": "2026-02-21T09:25:48.530Z",
+      "fieldCount": 4,
+      "rootType": "object"
+    }
+  ]
+}

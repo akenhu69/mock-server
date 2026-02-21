@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "productId": 1,
+    "userId": 1,
+    "username": "demo",
+    "rating": 4,
+    "comment": "非常美味的漢堡，推薦！",
+    "createdAt": "2023-08-15T14:30:00.000Z"
+  },
+  {
+    "id": 2,
+    "productId": 2,
+    "userId": 1,
+    "username": "demo",
+    "rating": 5,
+    "comment": "大麥克永遠的經典，好吃！",
+    "createdAt": "2023-07-20T09:15:00.000Z"
+  }
+]

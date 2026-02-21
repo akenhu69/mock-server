@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "eventItemId": 1,
+    "itemId": 101,
+    "itemName": "麥當勞 中筒襪系列 薯條襪子",
+    "coverImage": "https://dummyimage.com/500x500/f0ad4e/FFFFFF&text=薯條襪子",
+    "quantity": 2,
+    "originalPoint": 2500,
+    "actualPoint": 2500,
+    "isTicket": false
+  },
+  {
+    "id": 2,
+    "eventItemId": 2,
+    "itemId": 102,
+    "itemName": "漢堡收納袋",
+    "coverImage": "https://dummyimage.com/500x500/f0ad4e/FFFFFF&text=漢堡收納袋",
+    "quantity": 1,
+    "originalPoint": 2000,
+    "actualPoint": 2000,
+    "isTicket": false
+  },
+  {
+    "id": 3,
+    "eventItemId": 3,
+    "itemId": 103,
+    "itemName": "[ 預計4月中旬到貨 ] 麥當勞 毛帽",
+    "coverImage": "https://dummyimage.com/500x500/f0ad4e/FFFFFF&text=麥當勞毛帽",
+    "quantity": 3,
+    "originalPoint": 2000,
+    "actualPoint": 2000,
+    "isTicket": false
+  },
+  {
+    "id": 4,
+    "eventItemId": 4,
+    "itemId": 104,
+    "itemName": "麥當勞限量馬克杯",
+    "coverImage": "https://dummyimage.com/500x500/f0ad4e/FFFFFF&text=限量馬克杯",
+    "quantity": 1,
+    "originalPoint": 3000,
+    "actualPoint": 3000,
+    "isTicket": false
+  },
+  {
+    "id": 5,
+    "eventItemId": 5,
+    "itemId": 105,
+    "itemName": "麥當勞電影票券",
+    "coverImage": "https://dummyimage.com/500x500/d9534f/FFFFFF&text=電影票券",
+    "quantity": 2,
+    "originalPoint": 1500,
+    "actualPoint": 1500,
+    "isTicket": true
+  },
+  {
+    "id": 6,
+    "eventItemId": 6,
+    "itemId": 106,
+    "itemName": "樂園門票優惠券",
+    "coverImage": "https://dummyimage.com/500x500/d9534f/FFFFFF&text=樂園門票",
+    "quantity": 1,
+    "originalPoint": 5000,
+    "actualPoint": 5000,
+    "isTicket": true
+  },
+  {
+    "id": 7,
+    "eventItemId": "1944648065185722369",
+    "itemId": "1944647738143256578",
+    "itemName": "商品-1944647738143256578",
+    "coverImage": "https://dummyimage.com/500x500/f0ad4e/FFFFFF&text=商品1944647738143256578",
+    "quantity": 1,
+    "originalPoint": 1,
+    "actualPoint": 1
+  },
+  {
+    "id": 8,
+    "eventItemId": "1947188894521499649",
+    "itemId": "1947188236334538754",
+    "itemName": "商品-1947188236334538754",
+    "coverImage": "https://dummyimage.com/500x500/f0ad4e/FFFFFF&text=商品1947188236334538754",
+    "quantity": 1,
+    "originalPoint": 1,
+    "actualPoint": 1
+  },
+  {
+    "id": 9,
+    "eventItemId": "1944648065185722369",
+    "itemId": "1944647738143256578",
+    "itemName": "商品-1944647738143256578",
+    "coverImage": "https://dummyimage.com/500x500/f0ad4e/FFFFFF&text=商品1944647738143256578",
+    "quantity": 1,
+    "originalPoint": 1,
+    "actualPoint": 1
+  }
+]
