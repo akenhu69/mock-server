@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "object",
+      "properties": {
+        "roleName": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
